@@ -1,9 +1,12 @@
-import { useState } from 'react'
+import { useEffect } from 'react'
+import { getAll, Collections } from './firebase/firestoreService';
 import './App.css'
 import MinecraftItemPicker from './component/item_selector/MinecraftItemPicker'
 
 function App() {
-
+    useEffect(() => {
+        getAll(Collections.ITEMS).then(console.log);
+    }, []);
   return (
     <>
       <MinecraftItemPicker />
