@@ -1,4 +1,4 @@
-import { rtdb } from './firebase';
+import { rtdb } from './config.js';
 import { ref, set, get, child, remove as rtRemove } from 'firebase/database';
 
 export async function uploadSchem(id, name, fileBuffer) {
