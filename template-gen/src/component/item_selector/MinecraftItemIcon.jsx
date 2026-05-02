@@ -1,33 +1,25 @@
 import React, { useState, useEffect } from 'react';
 import { Box } from '@mui/material';
 
-// Tải URL của tất cả các icon từ thư mục cục bộ (hỗ trợ tốt trong Vite dev và build)
-const itemImages = import.meta.glob('../../public/data/item_texture/*.png', { eager: true, import: 'default' });
-const blockImages = import.meta.glob('../../public/data/block_texture/*.png', { eager: true, import: 'default' });
-
 const MinecraftItemIcon = ({ itemName, displayName }) => {
-  const itemImagePath = `../../public/data/item_texture/${itemName}.png`;
-  const blockImagePath = `../../public/data/block_texture/${itemName}.png`;
-  const barrierPath = `../../public/data/item_texture/barrier.png`;
+  // Vì file nằm ở /public/data/, Vite tự động hiểu đường dẫn gốc bắt đầu bằng /data/
+  const expectedSrc = `../../../public/data/item_texture/minecraft_${itemName}.png`;
+  const fallbackSrc = `../../../public/data/item_texture/minecraft_barrier.png`; // Giả định bạn có file minecraft_barrier.png
 
-  const getInitialImage = () => {
-    if (itemImages[itemImagePath]) return itemImages[itemImagePath];
-    if (blockImages[blockImagePath]) return blockImages[blockImagePath];
-    return itemImages[barrierPath];
-  };
+  const [imgSrc, setImgSrc] = useState(expectedSrc);
+  const [isError, setIsError] = useState(false);
 
-  const [imgSrc, setImgSrc] = useState(getInitialImage());
-  const [errorCount, setErrorCount] = useState(0);
-
+  // Reset lại state mỗi khi prop itemName thay đổi (khi user chuyển trang/search)
   useEffect(() => {
-    setImgSrc(getInitialImage());
-    setErrorCount(0);
-  }, [itemName]);
+    setImgSrc(expectedSrc);
+    setIsError(false);
+  }, [itemName, expectedSrc]);
 
+  // Handle lỗi 404 (Nếu item đó không có ảnh trong thư mục)
   const handleError = () => {
-    if (errorCount === 0) {
-      setImgSrc(itemImages[barrierPath]);
-      setErrorCount(1);
+    if (!isError) {
+      setImgSrc(fallbackSrc);
+      setIsError(true);
     }
   };
 
@@ -43,9 +35,10 @@ const MinecraftItemIcon = ({ itemName, displayName }) => {
         mb: 1.5,
         objectFit: 'contain',
         flexShrink: 0,
-        imageRendering: 'pixelated', // Giữ nguyên độ sắc nét
-        // Nếu load thất bại hoàn toàn, hiện một khối mờ để giữ form
-        ...(errorCount === 1 && {
+        imageRendering: 'pixelated', // Giữ nguyên độ sắc nét chuẩn Minecraft
+        
+        // Làm mờ và đổi màu xám nếu phải dùng ảnh fallback (barrier)
+        ...(isError && {
           opacity: 0.3,
           filter: 'grayscale(100%)'
         })

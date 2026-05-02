@@ -1,5 +1,4 @@
 import React, { useState, useMemo, useEffect } from 'react'; 
-
 import {
   Button,
   Dialog,
@@ -16,7 +15,7 @@ import {
 import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
 import MinecraftItemIcon from './MinecraftItemIcon';
-import allItemsData from '../../public/data/items/_all.json';
+import allItemsData from '../../../public/data/items/_all.json';
 
 const MINECRAFT_ITEMS = Object.keys(allItemsData).map((key, index) => ({
   id: index,
