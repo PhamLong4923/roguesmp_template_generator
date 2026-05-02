@@ -1,19 +1,16 @@
-﻿import { SidebarProvider } from "@/components/ui/sidebar";
+﻿// Layout.tsx
+import { SidebarProvider, SidebarInset, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/component/layout/AppSideBar";
 
 export default function Layout({ children }: { children: React.ReactNode }) {
     return (
         <SidebarProvider>
-            <div className="flex h-screen w-full bg-background text-foreground">
-                <AppSidebar />
-
-                <div className="flex flex-1 flex-col">
-
-
-                    <main className="flex-1 overflow-auto p-6">
-                        {children}
-                    </main>
-                </div>
+            {/* SidebarProvider tự có flex + min-h-svh, không cần override */}
+            <AppSidebar />
+            <div className="flex flex-col flex-1 min-w-0 overflow-hidden h-screen">
+                <main className="flex-1 p-2">
+                    {children}
+                </main>
             </div>
         </SidebarProvider>
     );

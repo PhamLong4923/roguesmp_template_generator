@@ -1,4 +1,4 @@
-﻿import { NavLink, useNavigate } from "react-router-dom";
+﻿import {NavLink, useLocation, useNavigate} from "react-router-dom";
 import { signOut } from "firebase/auth";
 // @ts-ignore
 import { auth } from "@/firebase/config";
@@ -11,66 +11,77 @@ import {
     SidebarHeader,
     SidebarMenu,
     SidebarMenuButton,
-    SidebarMenuItem, SidebarTrigger,
+    SidebarMenuItem,
+    useSidebar,
 } from "@/components/ui/sidebar";
-import { Button } from "@/components/ui/button";
-import { LogOut } from "lucide-react";
-import {useAuth} from "@/store/AuthContext";
+import {
+    LogOut, LayoutDashboard, Sword, Users, Castle,
+    DoorOpen, Crosshair, ScrollText, PanelLeftClose, PanelLeftOpen,
+} from "lucide-react";
+import { useAuth } from "@/store/AuthContext";
 
 const NAV_SECTIONS = [
     {
         label: "EDITORS",
         items: [
-            { label: "Dashboard",     to: "/" },
-            { label: "Item",          to: "/item" },
-            { label: "Entity",        to: "/entity" },
-            { label: "Dungeon",       to: "/dungeon" },
-            { label: "Room",          to: "/room" },
-            { label: "Spawner",       to: "/spawner" },
-            { label: "Loot Table",    to: "/loottable" },
+            { label: "Dashboard",  to: "/",          icon: LayoutDashboard },
+            { label: "Item",       to: "/item",       icon: Sword },
+            { label: "Entity",     to: "/entity",     icon: Users },
+            { label: "Dungeon",    to: "/dungeon",    icon: Castle },
+            { label: "Room",       to: "/room",       icon: DoorOpen },
+            { label: "Spawner",    to: "/spawner",    icon: Crosshair },
+            { label: "Loot Table", to: "/loottable",  icon: ScrollText },
         ],
     },
 ];
 
-function getInitials(email = "") {
-    return email
-        .split("@")[0]
-        .split(/[._-]/)
-        .slice(0, 2)
-        .map((p: string) => p[0]?.toUpperCase() ?? "")
-        .join("");
+function ToggleButton() {
+    const { toggleSidebar, open } = useSidebar();
+    return (
+        <button
+            onClick={toggleSidebar}
+            className="p-1 rounded-md hover:bg-sidebar-accent text-sidebar-foreground transition-colors"
+        >
+            {open
+                ? <PanelLeftClose className="h-4 w-4" />
+                : <PanelLeftOpen  className="h-4 w-4" />
+            }
+        </button>
+    );
 }
 
 export function AppSidebar() {
     const { user } = useAuth();
     const navigate = useNavigate();
+    const location = useLocation();
 
     return (
-        <Sidebar
-            collapsible="icon"
-            className="border-r bg-sidebar"
-        >
-            {/* Header */}
-            <SidebarHeader className="px-3 py-4 flex items-center justify-between">
-                <span className="text-sm font-semibold">MCD</span>
-                <SidebarTrigger />
+        <Sidebar collapsible="icon" className="border-r bg-sidebar">
+            <SidebarHeader className="flex flex-row items-center justify-between px-3 py-3">
+                <span className="text-sm font-semibold group-data-[collapsible=icon]:hidden">
+                    MCD
+                </span>
+                <ToggleButton />
             </SidebarHeader>
 
-            {/* Content */}
             <SidebarContent>
                 {NAV_SECTIONS.map((section) => (
                     <SidebarGroup key={section.label}>
-                        <SidebarGroupLabel>
-                            {section.label}
-                        </SidebarGroupLabel>
-
+                        <SidebarGroupLabel>{section.label}</SidebarGroupLabel>
                         <SidebarMenu>
                             {section.items.map((item) => (
                                 <SidebarMenuItem key={item.to}>
-                                    <SidebarMenuButton asChild>
-                                        <NavLink to={item.to}>
-                                            {item.label}
-                                        </NavLink>
+                                    <SidebarMenuButton
+                                        isActive={
+                                            item.to === "/"
+                                                ? location.pathname === "/"
+                                                : location.pathname.startsWith(item.to)
+                                        }
+                                        tooltip={item.label}
+                                        onClick={() => navigate(item.to)}
+                                    >
+                                        <item.icon />
+                                        <span>{item.label}</span>
                                     </SidebarMenuButton>
                                 </SidebarMenuItem>
                             ))}
@@ -79,19 +90,21 @@ export function AppSidebar() {
                 ))}
             </SidebarContent>
 
-            {/* Footer */}
             <SidebarFooter>
-                <Button
-                    variant="ghost"
-                    className="w-full justify-start"
-                    onClick={async () => {
-                        await signOut(auth);
-                        navigate("/login");
-                    }}
-                >
-                    <LogOut className="mr-2 h-4 w-4" />
-                    Logout
-                </Button>
+                <SidebarMenu>
+                    <SidebarMenuItem>
+                        <SidebarMenuButton
+                            tooltip="Logout"
+                            onClick={async () => {
+                                await signOut(auth);
+                                navigate("/login");
+                            }}
+                        >
+                            <LogOut />
+                            <span>Logout</span>
+                        </SidebarMenuButton>
+                    </SidebarMenuItem>
+                </SidebarMenu>
             </SidebarFooter>
         </Sidebar>
     );

@@ -1,15 +1,22 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
+@import "tailwindcss";
 @import "@fontsource-variable/geist";
 @import "shadcn/tailwind.css";
 @import "tw-animate-css";
 
-:root {
-  --font-sans: 'Geist Variable', sans-serif;
+@theme {
+  --font-family-sans: 'Geist Variable', sans-serif;
 
-  /* Light mode */
+  --color-sidebar: oklch(var(--sidebar));
+  --color-sidebar-foreground: oklch(var(--sidebar-foreground));
+  --color-sidebar-primary: oklch(var(--sidebar-primary));
+  --color-sidebar-primary-foreground: oklch(var(--sidebar-primary-foreground));
+  --color-sidebar-accent: oklch(var(--sidebar-accent));
+  --color-sidebar-accent-foreground: oklch(var(--sidebar-accent-foreground));
+  --color-sidebar-border: oklch(var(--sidebar-border));
+  --color-sidebar-ring: oklch(var(--sidebar-ring));
+}
+
+:root {
   --background: 1 0 0;
   --foreground: 0.145 0 0;
 
@@ -39,7 +46,7 @@
 
   --radius: 0.625rem;
 
-  --sidebar: 0.97 0 0;
+  --sidebar: 0.32 0 0;
   --sidebar-foreground: 0.145 0 0;
   --sidebar-primary: 0.205 0 0;
   --sidebar-primary-foreground: 0.985 0 0;
@@ -77,7 +84,7 @@
   --input: 1 0 0 / 0.15;
   --ring: 0.556 0 0;
 
-  --sidebar: 0.24 0 0;
+  --sidebar: 0.32 0 0;
   --sidebar-foreground: 0.985 0 0;
   --sidebar-primary: 0.488 0.243 264.376;
   --sidebar-primary-foreground: 0.985 0 0;
@@ -89,14 +96,12 @@
 
 @layer base {
   * {
-    @apply border-border;
+    border-color: oklch(var(--border));
   }
 
   body {
-    @apply bg-background text-foreground;
-  }
-
-  html {
-    @apply font-sans;
+    background-color: oklch(var(--background));
+    color: oklch(var(--foreground));
+    font-family: var(--font-family-sans);
   }
 }

@@ -1,7 +1,7 @@
-import { useState } from "react";
-import { signInWithEmailAndPassword } from "firebase/auth";
-import { useNavigate } from "react-router-dom";
-import { auth } from "@/firebase/config";
+import {useState} from "react";
+import {signInWithEmailAndPassword} from "firebase/auth";
+import {useNavigate} from "react-router-dom";
+import {auth} from "@/firebase/config";
 
 export default function Login() {
     const [email, setEmail] = useState("");
@@ -65,7 +65,7 @@ export default function Login() {
                     backgroundPosition: "center",
                     borderRight: "1px solid #2a2218",
                     flexShrink: 0,
-                }} />
+                }}/>
 
                 {/* Right — login form */}
                 <div style={{
@@ -77,31 +77,34 @@ export default function Login() {
                 }}>
 
                     {/* Logo */}
-                    <div style={{ marginBottom: 36 }}>
+                    <div style={{marginBottom: 36}}>
                         <div style={{
                             fontFamily: "'Cinzel', serif",
                             fontSize: 16, fontWeight: 700,
                             color: "#e8d4a0", letterSpacing: 2,
-                        }}>MCD Dev Portal</div>
+                        }}>MCD Dev Portal
+                        </div>
                         <div style={{
                             fontSize: 9, color: "#3a2e18",
                             letterSpacing: 3, marginTop: 5,
-                        }}>INTERNAL TOOLING</div>
+                        }}>INTERNAL TOOLING
+                        </div>
                     </div>
 
                     <div style={{
                         fontSize: 11, color: "#6a5a38",
                         letterSpacing: 2, marginBottom: 28,
-                    }}>ĐĂNG NHẬP</div>
+                    }}>ĐĂNG NHẬP
+                    </div>
 
                     {/* Progress bar */}
-                    <div style={{ height: 1, background: "#2a2218", marginBottom: 20 }}>
+                    <div style={{height: 1, background: "#2a2218", marginBottom: 20}}>
                         <div style={{
                             height: "100%",
                             background: error ? "#801818" : "#b8821e",
                             width: `${progress}%`,
                             transition: "width 0.3s",
-                        }} />
+                        }}/>
                     </div>
 
                     {/* Error */}
@@ -116,7 +119,7 @@ export default function Login() {
                     )}
 
                     {/* Email */}
-                    <div style={{ marginBottom: 16 }}>
+                    <div style={{marginBottom: 16}}>
                         <label style={{
                             display: "block", fontSize: 9,
                             color: "#4a3a20", letterSpacing: 2, marginBottom: 6,
@@ -127,7 +130,7 @@ export default function Login() {
                             placeholder="name@studio.internal"
                             value={email}
                             onChange={(e) => setEmail(e.target.value)}
-                            onKeyDown={(e) => e.key === "Enter" && document.getElementById("mcd-pass").focus()}
+                            onKeyDown={(e) => e.key === "Enter" && document.getElementById("mcd-pass")?.focus()}
                             style={{
                                 width: "100%",
                                 background: "#0f0e0d",
@@ -141,7 +144,7 @@ export default function Login() {
                     </div>
 
                     {/* Password */}
-                    <div style={{ marginBottom: 6 }}>
+                    <div style={{marginBottom: 6}}>
                         <label style={{
                             display: "block", fontSize: 9,
                             color: "#4a3a20", letterSpacing: 2, marginBottom: 6,
