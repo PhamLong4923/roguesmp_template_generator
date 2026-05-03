@@ -1,5 +1,5 @@
 import { getAll, getById, create, upsert, remove, queryBy, Collections } from '@/firebase/firestoreService';
-import { Item } from '@/data/Item';
+import { Item } from '@/data/item';
 
 const COL = Collections.ITEMS;
 

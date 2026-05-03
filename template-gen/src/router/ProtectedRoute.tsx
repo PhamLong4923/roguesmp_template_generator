@@ -1,5 +1,5 @@
 ﻿import { Navigate, Outlet } from "react-router-dom";
-import Layout from "@/component/layout/AppLayout";
+import Layout from "@/components/layout/AppLayout";
 import { useAuth } from "@/store/AuthContext";
 
 export default function ProtectedRoute() {

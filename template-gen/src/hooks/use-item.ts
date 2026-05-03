@@ -5,7 +5,7 @@ import {
     queryOptions,
 } from '@tanstack/react-query';
 import {itemService} from "@/service/item";
-import {Item} from "@/data/Item";
+import {Item} from "@/data/item";
 
 export const itemKeys = {
     all:        ()          => ['items']              as const,

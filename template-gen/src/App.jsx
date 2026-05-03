@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import { getAll, Collections } from './firebase/firestoreService.ts';
 import './App.css'
-import MinecraftItemPicker from './component/item_selector/MinecraftItemPicker'
+import MinecraftItemPicker from '@/components/item_selector/MinecraftItemPicker'
 
 function App() {
     useEffect(() => {

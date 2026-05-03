@@ -5,7 +5,7 @@ export interface Consumable {
     animation: string;
     sound: string;
     hasParticles: boolean;
-    effects: Effect
+    effects: Effect[]
 }
 
 export interface Effect{
