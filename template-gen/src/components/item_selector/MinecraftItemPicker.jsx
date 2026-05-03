@@ -15,7 +15,7 @@ import {
 } from '@mui/material';
 import SearchIcon from '@mui/icons-material/Search';
 import CloseIcon from '@mui/icons-material/Close';
-import MinecraftItemIcon from './MinecraftItemIcon';
+import MinecraftItemIcon from './MinecraftItemIcon.jsx';
 import allItemsData from '../../public/data/items/_all.json';
 
 const MINECRAFT_ITEMS = Object.keys(allItemsData).map((key, index) => ({
