@@ -6,9 +6,10 @@ const itemImages = import.meta.glob('../../public/data/item_texture/*.png', { ea
 const blockImages = import.meta.glob('../../public/data/block_texture/*.png', { eager: true, import: 'default' });
 
 const MinecraftItemIcon = ({ itemName, displayName }) => {
-  const itemImagePath = `../../public/data/item_texture/${itemName}.png`;
-  const blockImagePath = `../../public/data/block_texture/${itemName}.png`;
-  const barrierPath = `../../public/data/item_texture/barrier.png`;
+  const formattedName = itemName.startsWith('minecraft:') ? itemName.replace(':', '_') : `minecraft_${itemName}`;
+  const itemImagePath = `../../public/data/item_texture/${formattedName}.png`;
+  const blockImagePath = `../../public/data/block_texture/${formattedName}.png`;
+  const barrierPath = `../../public/data/item_texture/minecraft_barrier.png`;
 
   const getInitialImage = () => {
     if (itemImages[itemImagePath]) return itemImages[itemImagePath];

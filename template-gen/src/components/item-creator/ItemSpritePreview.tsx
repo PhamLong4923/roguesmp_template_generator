@@ -4,6 +4,8 @@ interface ItemSpritePreviewProps {
     base: string;
 }
 
+const itemImages: Record<string, string> = import.meta.glob('../../public/data/item_texture/*.png', { eager: true, import: 'default' });
+
 export function ItemSpritePreview({ base }: ItemSpritePreviewProps): JSX.Element {
     const { spriteUrl, fallbackColor, label } = useMcItemSprite(base);
 
@@ -25,7 +27,7 @@ export function ItemSpritePreview({ base }: ItemSpritePreviewProps): JSX.Element
             />
             {spriteUrl ? (
                 <img
-                    src={spriteUrl}
+                    src={itemImages[spriteUrl]}
                     alt={label}
                     className="w-3/4 h-3/4 object-contain"
                     style={{ imageRendering: "pixelated" }}

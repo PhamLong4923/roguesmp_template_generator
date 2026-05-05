@@ -13,9 +13,17 @@ const COLOR_MAP: Record<string, string> = {
     SHIELD:             "#8b6914",
 };
 
+function getItemImagePath(itemName: string): string{
+    const formattedName = itemName.startsWith('minecraft:') ? itemName.replace(':', '_') : `minecraft_${itemName}`;
+    const itemImagePath = `../../public/data/item_texture/${formattedName}.png`;
+    const barrierPath = `../../public/data/item_texture/minecraft_barrier.png`;
+
+    return itemName.length > 0 ? itemImagePath : barrierPath;
+}
+
 export function useMcItemSprite(base: string): SpriteInfo {
     return {
-        spriteUrl: null, // TODO: map base -> real sprite URL
+        spriteUrl: getItemImagePath(base), // TODO: map base -> real sprite URL
         fallbackColor: COLOR_MAP[base] ?? "#555",
         label: base,
     };

@@ -25,7 +25,7 @@ const MINECRAFT_ITEMS = Object.keys(allItemsData).map((key, index) => ({
 }));
 
 const ITEMS_PER_PAGE = 25; 
-const MinecraftItemPicker = () => {
+const MinecraftItemPicker = ({ value, onChange }) => {
   const [open, setOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [page, setPage] = useState(1);
@@ -62,9 +62,28 @@ const MinecraftItemPicker = () => {
   };
 
   return (
-    <Box sx={{ p: 2 }}>
-      <Button variant="contained" onClick={handleOpen}>
-        Xem toàn bộ item 
+    <Box sx={{ width: '100%' }}>
+      <Button
+        variant="outlined"
+        onClick={handleOpen}
+        sx={{
+          justifyContent: "flex-start",
+          textTransform: "none",
+          color: value ? "#f4f4f5" : "#a1a1aa",
+          borderColor: "#3f3f46",
+          backgroundColor: "#18181b",
+          fontFamily: "monospace",
+          fontSize: "0.875rem",
+          height: "32px",
+          width: "100%",
+          px: 1.5,
+          '&:hover': {
+             backgroundColor: "#27272a",
+             borderColor: "#3f3f46",
+          }
+        }}
+      >
+        {value || "Chọn base..."}
       </Button>
 
       <Dialog
@@ -132,17 +151,22 @@ const MinecraftItemPicker = () => {
             {paginatedItems.map((item) => (
               <Card
                 key={item.id}
+                onClick={() => {
+                  if (onChange) onChange(item.name);
+                  handleClose();
+                }}
                 variant="outlined"
                 sx={{
                   // Thêm margin y ~5px theo yêu cầu để chống đè
                   my: "10px",
-                  height: "80%",
+                  height: "100%",
                   display: "flex",
                   flexDirection: "column",
                   alignItems: "center",
                   justifyContent: "flex-start",
                   textAlign: "center",
                   p: 2,
+                  pb: 3,
                   bgcolor: "background.paper",
                   transition: "0.15s",
                   cursor: "pointer",
