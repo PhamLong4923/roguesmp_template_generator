@@ -227,11 +227,24 @@ export const ItemPage = (): JSX.Element => {
                         <div className="flex-1 flex flex-col min-h-0">
                             {leftPanelView === "lore" ? (
                                 <ScrollArea className="flex-1 h-full pr-3" type="auto">
-                                    <LorePreview name={name} description={description} />
+                                    <LorePreview
+                                        name={name}
+                                        description={description}
+                                        components={{
+                                            consumable: hasConsumable ? consumable : undefined,
+                                            attribute: hasAttribute ? {
+                                                attributes: attributes as Attributes,
+                                                slot: attributeSlot
+                                            } : undefined,
+                                            enchant: hasEnchant ? enchant : undefined,
+                                        }}
+                                    />
                                 </ScrollArea>
                             ) : (
-                                <ScrollArea className="flex-1 h-full rounded-lg border border-zinc-800 bg-zinc-950 p-3" type="auto">
-                                    <pre className="text-[10px] text-emerald-400 leading-relaxed whitespace-pre-wrap break-all">
+                                <ScrollArea className="flex-1 h-full rounded-lg border border-zinc-800 bg-zinc-950 p-3"
+                                            type="auto">
+                                    <pre
+                                        className="text-[10px] text-emerald-400 leading-relaxed whitespace-pre-wrap break-all">
                                         {JSON.stringify(buildItem(), null, 2)}
                                     </pre>
                                 </ScrollArea>
