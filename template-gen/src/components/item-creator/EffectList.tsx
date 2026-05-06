@@ -1,11 +1,14 @@
 import { Trash2, Plus, ChevronDown, ChevronUp } from "lucide-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/separator";
-import { Badge } from "@/components/ui/badge";
+import {
+    Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
+} from "@/components/ui/select";
+import { Label } from "@/components/ui/label";import { Badge } from "@/components/ui/badge";
 import { Effect } from "@/data/cpn/consumable";
 import { EFFECT_FIELDS, makeDefaultEffect } from "@/constants/item-creator";
 import { FieldRow } from "./FieldRow";
+import {EFFECT_REGISTRY} from "@/registry/effect-registry";
 
 interface EffectListProps {
     effects: Effect[];
@@ -110,15 +113,36 @@ export function EffectList({ effects, onChange }: EffectListProps) {
                             {/* Card body */}
                             {!isCollapsed && (
                                 <div className="px-3 py-2 space-y-0.5 border-t border-zinc-700/40">
-                                    {EFFECT_FIELDS.map((f) => (
+                                    <div className="flex items-center gap-2 py-1 px-2 rounded-md hover:bg-zinc-800/60 group">
+                                        <Label className="text-xs text-zinc-400 w-44 shrink-0 group-hover:text-zinc-300">
+                                            id
+                                        </Label>
+                                        <Select
+                                            value={eff.id}
+                                            onValueChange={(v) => updateEffect(index, "id", v)}
+                                        >
+                                            <SelectTrigger className="h-6 text-xs bg-zinc-900 border-zinc-700 text-zinc-100 px-2">
+                                                <SelectValue placeholder="Chọn effect..." />
+                                            </SelectTrigger>
+                                            <SelectContent className="bg-zinc-900 border-zinc-700 text-zinc-100">
+                                                {EFFECT_REGISTRY.map((e) => (
+                                                    <SelectItem key={e.id} value={e.id} className="text-xs font-mono">
+                                                        <span className="font-mono">{e.id}</span>
+                                                        <span className="text-zinc-500 ml-2">{e.simpleName}</span>
+                                                    </SelectItem>
+                                                ))}
+                                            </SelectContent>
+                                        </Select>
+                                    </div>
+
+                                    {/* các field còn lại — bỏ qua id */}
+                                    {EFFECT_FIELDS.filter((f) => f.key !== "id").map((f) => (
                                         <FieldRow
                                             key={f.key}
                                             label={f.key}
                                             type={f.type}
                                             value={eff[f.key as keyof Effect] as string | number | boolean}
-                                            onChange={(v) =>
-                                                updateEffect(index, f.key as keyof Effect, v as never)
-                                            }
+                                            onChange={(v) => updateEffect(index, f.key as keyof Effect, v as never)}
                                         />
                                     ))}
                                 </div>

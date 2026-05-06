@@ -1,3 +1,3 @@
-export interface Enchant{
-
+export interface Enchant {
+    enchants: Record<string, number>;
 }
