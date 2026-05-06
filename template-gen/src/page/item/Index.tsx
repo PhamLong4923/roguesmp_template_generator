@@ -46,6 +46,8 @@ export const ItemPage = (): JSX.Element => {
     const [attributes, setAttributes]       = useState<Partial<Attributes>>({});
     const [consumable, setConsumable]       = useState<Consumable>(DEFAULT_CONSUMABLE);
 
+    const [leftPanelView, setLeftPanelView] = useState<"lore" | "json">("lore");
+
     const createItem = useCreateItem();
 
     // ─── builders ─────────────────────────────────────────────────────────────
@@ -129,30 +131,56 @@ export const ItemPage = (): JSX.Element => {
 
                     {/* ── LEFT PANEL ── */}
                     <div
-                        className="w-1/3 border-r border-zinc-800 flex flex-col p-4 gap-4 overflow-auto"
+                        className="w-1/3 border-r border-zinc-800 flex flex-col p-4 gap-4 overflow-hidden"
                         style={{ background: "rgba(10,10,18,0.6)" }}
                     >
-                        <div>
-                            <p className="text-[10px] uppercase tracking-widest text-zinc-500 mb-2 font-semibold">
+                        {/* Sprite Preview */}
+                        <div className="flex flex-col items-center shrink-0">
+                            <p className="text-[10px] uppercase tracking-widest text-zinc-500 mb-2 font-semibold w-full text-left">
                                 Sprite Preview
                             </p>
-                            <ItemSpritePreview base={base} />
+                            <div className="w-32 h-32">
+                                <ItemSpritePreview base={base} />
+                            </div>
                         </div>
-                        <div>
-                            <p className="text-[10px] uppercase tracking-widest text-zinc-500 mb-2 font-semibold">
+
+                        {/* View Toggle */}
+                        <div className="flex bg-zinc-900/50 p-1 rounded-lg border border-zinc-800 shrink-0">
+                            <button
+                                onClick={() => setLeftPanelView("lore")}
+                                className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition-colors ${
+                                    leftPanelView === "lore"
+                                        ? "bg-zinc-800 text-zinc-200 shadow-sm"
+                                        : "text-zinc-500 hover:text-zinc-300"
+                                }`}
+                            >
                                 Tooltip / Lore
-                            </p>
-                            <LorePreview name={name} description={description} />
-                        </div>
-                        <div className="mt-auto">
-                            <p className="text-[10px] uppercase tracking-widest text-zinc-500 mb-2 font-semibold">
+                            </button>
+                            <button
+                                onClick={() => setLeftPanelView("json")}
+                                className={`flex-1 py-1.5 text-xs font-semibold rounded-md transition-colors ${
+                                    leftPanelView === "json"
+                                        ? "bg-zinc-800 text-zinc-200 shadow-sm"
+                                        : "text-zinc-500 hover:text-zinc-300"
+                                }`}
+                            >
                                 JSON Live
-                            </p>
-                            <ScrollArea className="h-36 rounded-lg border border-zinc-800 bg-zinc-950 p-2">
-                                <pre className="text-[10px] text-emerald-400 leading-relaxed whitespace-pre-wrap break-all">
-                                    {JSON.stringify(buildItem(), null, 2)}
-                                </pre>
-                            </ScrollArea>
+                            </button>
+                        </div>
+
+                        {/* View Content */}
+                        <div className="flex-1 flex flex-col min-h-0">
+                            {leftPanelView === "lore" ? (
+                                <ScrollArea className="flex-1 h-full pr-3" type="auto">
+                                    <LorePreview name={name} description={description} />
+                                </ScrollArea>
+                            ) : (
+                                <ScrollArea className="flex-1 h-full rounded-lg border border-zinc-800 bg-zinc-950 p-3" type="auto">
+                                    <pre className="text-[10px] text-emerald-400 leading-relaxed whitespace-pre-wrap break-all">
+                                        {JSON.stringify(buildItem(), null, 2)}
+                                    </pre>
+                                </ScrollArea>
+                            )}
                         </div>
                     </div>
 
@@ -179,7 +207,7 @@ export const ItemPage = (): JSX.Element => {
                         </div>
 
                         <ScrollArea className="flex-1 px-5 py-4 overflow-auto">
-                            <div className="space-y-5 max-w-3xl">
+                            <div className="space-y-5 max-w-3xl p-1">
 
                                 {/* ID + Base */}
                                 <div className="grid grid-cols-2 gap-3">
