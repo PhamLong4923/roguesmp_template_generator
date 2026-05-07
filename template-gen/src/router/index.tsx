@@ -3,6 +3,8 @@ import ProtectedRoute from "./ProtectedRoute";
 import Login from "../page/auth/Login";
 import ItemPage from "@/page/item/Index";
 import {EntityPage} from "@/page/entity";
+import {LootTablePage} from "@/page/loottable/Index";
+import {CreateLootTablePage} from "@/page/loottable/CreateLoot";
 
 export const router = createBrowserRouter([
     {
@@ -17,7 +19,8 @@ export const router = createBrowserRouter([
             {path: "/item", element: <ItemPage></ItemPage>},
             {path: "/dungeon", element: <div>Dungeon</div>},
             {path: "/entity", element: <EntityPage></EntityPage>},
-            {path: "/loottable", element: <div>Loot Table</div>},
+            {path: "/loottable", element: <LootTablePage></LootTablePage>},
+            {path: "/loottable/create", element: <CreateLootTablePage></CreateLootTablePage>},
             {path: "/room", element: <div>Room</div>},
             {path: "/spawner", element: <div>Spawner</div>},
         ],

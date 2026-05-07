@@ -1,42 +1,38 @@
-import { useState, useCallback } from "react";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Badge }    from "@/components/ui/badge";
-import { Button }   from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
-import { Input }    from "@/components/ui/input";
-import { Label }    from "@/components/ui/label";
-import {
-    Select, SelectContent, SelectItem, SelectTrigger, SelectValue,
-} from "@/components/ui/select";
-import { Separator }  from "@/components/ui/separator";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { TooltipProvider } from "@/components/ui/tooltip";
-import { Save, RefreshCw, Code2, Sword, Zap, Sparkles } from "lucide-react";
+import {useCallback, useState} from "react";
+import {Tabs, TabsContent, TabsList, TabsTrigger} from "@/components/ui/tabs";
+import {Badge} from "@/components/ui/badge";
+import {Button} from "@/components/ui/button";
+import {Checkbox} from "@/components/ui/checkbox";
+import {Input} from "@/components/ui/input";
+import {Label} from "@/components/ui/label";
+import {Select, SelectContent, SelectItem, SelectTrigger, SelectValue,} from "@/components/ui/select";
+import {Separator} from "@/components/ui/separator";
+import {ScrollArea} from "@/components/ui/scroll-area";
+import {TooltipProvider} from "@/components/ui/tooltip";
+import {Code2, RefreshCw, Save, Sparkles, Sword, Zap} from "lucide-react";
 
-import { useCreateItem }         from "@/hooks/use-item";
-import { Item }                  from "@/data/item";
-import { Attributes, Attribute } from "@/data/cpn/attribute";
-import { Consumable, Effect }    from "@/data/cpn/consumable";
-import { Enchant }               from "@/data/cpn/enchant";
+import {useCreateItem} from "@/hooks/use-item";
+import {Item} from "@/data/item";
+import {Attribute, Attributes} from "@/data/cpn/attribute";
+import {Consumable, Effect} from "@/data/cpn/consumable";
+import {Enchant} from "@/data/cpn/enchant";
 
-import { Slot } from "@/type/item-creator";
-import {
-    ATTRIBUTE_KEYS, CONSUMABLE_FIELDS, DEFAULT_CONSUMABLE,
-} from "@/constants/item-creator";
+import {Slot} from "@/type/item-creator";
+import {ATTRIBUTE_KEYS, CONSUMABLE_FIELDS, DEFAULT_CONSUMABLE,} from "@/constants/item-creator";
 
-import { ItemSpritePreview } from "@/components/item-creator/ItemSpritePreview";
-import { LorePreview }       from "@/components/item-creator/LorePreview";
-import { McTextEditor }      from "@/components/item-creator/McTextEditor";
-import { FieldRow }          from "@/components/item-creator/FieldRow";
-import { EffectList }        from "@/components/item-creator/EffectList";
-import { EnchantList }       from "@/components/item-creator/EnchantList";
-import MinecraftItemPicker   from "@/components/item_selector/MinecraftItemPicker";
+import {ItemSpritePreview} from "@/components/item-creator/ItemSpritePreview";
+import {LorePreview} from "@/components/item-creator/LorePreview";
+import {McTextEditor} from "@/components/item-creator/McTextEditor";
+import {FieldRow} from "@/components/item-creator/FieldRow";
+import {EffectList} from "@/components/item-creator/EffectList";
+import {EnchantList} from "@/components/item-creator/EnchantList";
+import MinecraftItemPicker from "@/components/item_selector/MinecraftItemPicker";
 
 // ─── Default states (dùng để reset per-component) ─────────────────────────────
 
 const DEFAULT_ATTRIBUTES: Partial<Attributes> = {};
 const DEFAULT_ATTRIBUTE_SLOT: Slot = "MAINHAND";
-const DEFAULT_ENCHANT: Enchant = { enchants: {} };
+const DEFAULT_ENCHANT: Enchant = {enchants: {}};
 
 // ─── ComponentTabHeader ────────────────────────────────────────────────────────
 
@@ -48,10 +44,10 @@ interface ComponentTabHeaderProps {
     color: "sky" | "amber" | "purple";
 }
 
-function ComponentTabHeader({ label, enabled, onToggle, onReset, color }: ComponentTabHeaderProps) {
+function ComponentTabHeader({label, enabled, onToggle, onReset, color}: ComponentTabHeaderProps) {
     const checkboxColor = {
-        sky:    "data-[state=checked]:bg-sky-600    data-[state=checked]:border-sky-600",
-        amber:  "data-[state=checked]:bg-amber-600  data-[state=checked]:border-amber-600",
+        sky: "data-[state=checked]:bg-sky-600    data-[state=checked]:border-sky-600",
+        amber: "data-[state=checked]:bg-amber-600  data-[state=checked]:border-amber-600",
         purple: "data-[state=checked]:bg-purple-600 data-[state=checked]:border-purple-600",
     }[color];
 
@@ -76,7 +72,7 @@ function ComponentTabHeader({ label, enabled, onToggle, onReset, color }: Compon
                 onClick={onReset}
                 className="h-6 px-2 text-[11px] text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800 gap-1"
             >
-                <RefreshCw size={10} />
+                <RefreshCw size={10}/>
                 Reset {label}
             </Button>
         </div>
@@ -86,21 +82,21 @@ function ComponentTabHeader({ label, enabled, onToggle, onReset, color }: Compon
 // ─── ItemPage ──────────────────────────────────────────────────────────────────
 
 export const ItemPage = (): JSX.Element => {
-    const [id, setId]                   = useState<string>("");
-    const [base, setBase]               = useState<string>("");
-    const [name, setName]               = useState<string>("");
+    const [id, setId] = useState<string>("");
+    const [base, setBase] = useState<string>("");
+    const [name, setName] = useState<string>("");
     const [description, setDescription] = useState<string>("");
 
     // enable flags
-    const [hasAttribute, setHasAttribute]   = useState<boolean>(false);
+    const [hasAttribute, setHasAttribute] = useState<boolean>(false);
     const [hasConsumable, setHasConsumable] = useState<boolean>(false);
-    const [hasEnchant, setHasEnchant]       = useState<boolean>(false);
+    const [hasEnchant, setHasEnchant] = useState<boolean>(false);
 
     // component data
     const [attributeSlot, setAttributeSlot] = useState<Slot>(DEFAULT_ATTRIBUTE_SLOT);
-    const [attributes, setAttributes]       = useState<Partial<Attributes>>(DEFAULT_ATTRIBUTES);
-    const [consumable, setConsumable]       = useState<Consumable>(DEFAULT_CONSUMABLE);
-    const [enchant, setEnchant]             = useState<Enchant>(DEFAULT_ENCHANT);
+    const [attributes, setAttributes] = useState<Partial<Attributes>>(DEFAULT_ATTRIBUTES);
+    const [consumable, setConsumable] = useState<Consumable>(DEFAULT_CONSUMABLE);
+    const [enchant, setEnchant] = useState<Enchant>(DEFAULT_ENCHANT);
 
     const [leftPanelView, setLeftPanelView] = useState<"lore" | "json">("lore");
 
@@ -113,19 +109,29 @@ export const ItemPage = (): JSX.Element => {
             name: name || "",
             description: description ? description.split("\n").filter((l) => l.trim()) : [],
         };
-        if (hasAttribute)  components.attribute = { attributes: attributes as Attributes, slot: attributeSlot } as Attribute;
+        if (hasAttribute) components.attribute = {
+            attributes: attributes as Attributes,
+            slot: attributeSlot
+        } as Attribute;
         if (hasConsumable) components.consumable = consumable;
-        if (hasEnchant)    components.enchant    = enchant;
-        return { id, base, components };
+        if (hasEnchant) components.enchant = enchant;
+        return {id, base, components};
     }, [id, base, name, description, hasAttribute, attributes, attributeSlot, hasConsumable, consumable, hasEnchant, enchant]);
 
     // ─── handlers ──────────────────────────────────────────────────────────────
 
     const handleSave = async () => {
         const item = buildItem();
-        if (!item.id || !item.base) { alert("ID và Base là bắt buộc!"); return; }
-        try { await createItem.mutateAsync(item); alert("Lưu thành công!"); }
-        catch (e) { alert("Lỗi: " + (e as Error).message); }
+        if (!item.id || !item.base) {
+            alert("ID và Base là bắt buộc!");
+            return;
+        }
+        try {
+            await createItem.mutateAsync(item);
+            alert("Lưu thành công!");
+        } catch (e) {
+            alert("Lỗi: " + (e as Error).message);
+        }
     };
 
     const handleGenerateJson = () => {
@@ -135,8 +141,13 @@ export const ItemPage = (): JSX.Element => {
 
     // Global reset
     const handleRefresh = () => {
-        setId(""); setBase(""); setName(""); setDescription("");
-        setHasAttribute(false); setHasConsumable(false); setHasEnchant(false);
+        setId("");
+        setBase("");
+        setName("");
+        setDescription("");
+        setHasAttribute(false);
+        setHasConsumable(false);
+        setHasEnchant(false);
         setAttributes(DEFAULT_ATTRIBUTES);
         setConsumable(DEFAULT_CONSUMABLE);
         setEnchant(DEFAULT_ENCHANT);
@@ -144,20 +155,23 @@ export const ItemPage = (): JSX.Element => {
     };
 
     // Per-component reset
-    const resetAttribute  = () => { setAttributes(DEFAULT_ATTRIBUTES); setAttributeSlot(DEFAULT_ATTRIBUTE_SLOT); };
+    const resetAttribute = () => {
+        setAttributes(DEFAULT_ATTRIBUTES);
+        setAttributeSlot(DEFAULT_ATTRIBUTE_SLOT);
+    };
     const resetConsumable = () => setConsumable(DEFAULT_CONSUMABLE);
-    const resetEnchant    = () => setEnchant(DEFAULT_ENCHANT);
+    const resetEnchant = () => setEnchant(DEFAULT_ENCHANT);
 
     // ─── setters ───────────────────────────────────────────────────────────────
 
     const setAttr = (key: keyof Attributes, val: number) =>
-        setAttributes((prev) => ({ ...prev, [key]: val }));
+        setAttributes((prev) => ({...prev, [key]: val}));
 
     const setConsumableField = <K extends keyof Omit<Consumable, "effects">>(key: K, val: Consumable[K]) =>
-        setConsumable((prev) => ({ ...prev, [key]: val }));
+        setConsumable((prev) => ({...prev, [key]: val}));
 
     const setEffects = (effects: Effect[]) =>
-        setConsumable((prev) => ({ ...prev, effects }));
+        setConsumable((prev) => ({...prev, effects}));
 
     // ─── render ────────────────────────────────────────────────────────────────
 
@@ -173,9 +187,9 @@ export const ItemPage = (): JSX.Element => {
                 {/* Header */}
                 <div
                     className="border-b border-zinc-800/80 px-6 py-3 flex items-center gap-3"
-                    style={{ background: "rgba(10,10,20,0.9)", backdropFilter: "blur(8px)" }}
+                    style={{background: "rgba(10,10,20,0.9)", backdropFilter: "blur(8px)"}}
                 >
-                    <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                    <div className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"/>
                     <span className="text-sm font-semibold text-zinc-300 tracking-wider uppercase">Item Creator</span>
                     <Badge variant="outline" className="text-[10px] border-zinc-700 text-zinc-500 ml-auto">
                         v0.1 — dev
@@ -187,7 +201,7 @@ export const ItemPage = (): JSX.Element => {
                     {/*LEFT PANEL*/}
                     <div
                         className="w-1/3 border-r border-zinc-800 flex flex-col p-4 gap-4 overflow-hidden"
-                        style={{ background: "rgba(10,10,18,0.6)" }}
+                        style={{background: "rgba(10,10,18,0.6)"}}
                     >
                         {/* Sprite Preview */}
                         <div className="flex flex-col items-center shrink-0">
@@ -195,7 +209,7 @@ export const ItemPage = (): JSX.Element => {
                                 Sprite Preview
                             </p>
                             <div className="w-32 h-32">
-                                <ItemSpritePreview base={base} />
+                                <ItemSpritePreview base={base}/>
                             </div>
                         </div>
 
@@ -257,20 +271,20 @@ export const ItemPage = (): JSX.Element => {
                         {/* Action bar */}
                         <div
                             className="flex items-center gap-2 px-5 py-2.5 border-b border-zinc-800 shrink-0"
-                            style={{ background: "rgba(12,12,22,0.9)" }}
+                            style={{background: "rgba(12,12,22,0.9)"}}
                         >
                             <Button size="sm" onClick={handleSave} disabled={createItem.isPending}
                                     className="h-8 bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold gap-1.5 px-3">
-                                <Save size={13} />
+                                <Save size={13}/>
                                 {createItem.isPending ? "Đang lưu..." : "Save"}
                             </Button>
                             <Button size="sm" variant="outline" onClick={handleGenerateJson}
                                     className="h-8 border-zinc-700 text-zinc-300 hover:bg-zinc-800 text-xs gap-1.5 px-3">
-                                <Code2 size={13} /> Generate JSON
+                                <Code2 size={13}/> Generate JSON
                             </Button>
                             <Button size="sm" variant="ghost" onClick={handleRefresh}
                                     className="h-8 text-zinc-500 hover:text-zinc-300 hover:bg-zinc-800 text-xs gap-1.5 px-3 ml-auto">
-                                <RefreshCw size={13} /> Reset All
+                                <RefreshCw size={13}/> Reset All
                             </Button>
                         </div>
 
@@ -281,21 +295,26 @@ export const ItemPage = (): JSX.Element => {
                                 {/* ID + Base */}
                                 <div className="grid grid-cols-2 gap-3">
                                     <div className="space-y-1.5">
-                                        <Label className="text-xs font-semibold text-zinc-400 uppercase tracking-widest">Item ID</Label>
+                                        <Label
+                                            className="text-xs font-semibold text-zinc-400 uppercase tracking-widest">Item
+                                            ID</Label>
                                         <Input value={id} onChange={(e) => setId(e.target.value)}
                                                placeholder="lapis_fragment"
-                                               className="h-8 text-sm bg-zinc-900 border-zinc-700 text-zinc-100 font-mono" />
+                                               className="h-8 text-sm bg-zinc-900 border-zinc-700 text-zinc-100 font-mono"/>
                                     </div>
                                     <div className="space-y-1.5 flex flex-col">
-                                        <Label className="text-xs font-semibold text-zinc-400 uppercase tracking-widest">Base (MC Item)</Label>
-                                        <MinecraftItemPicker value={base} onChange={setBase} />
+                                        <Label
+                                            className="text-xs font-semibold text-zinc-400 uppercase tracking-widest">Base
+                                            (MC Item)</Label>
+                                        <MinecraftItemPicker value={base} onChange={setBase}/>
                                     </div>
                                 </div>
 
-                                <McTextEditor label="Name" value={name} onChange={setName} />
-                                <McTextEditor label="Description" value={description} onChange={setDescription} multiline />
+                                <McTextEditor label="Name" value={name} onChange={setName}/>
+                                <McTextEditor label="Description" value={description} onChange={setDescription}
+                                              multiline/>
 
-                                <Separator className="bg-zinc-800" />
+                                <Separator className="bg-zinc-800"/>
 
                                 {/*Components Tabs*/}
                                 <div>
@@ -303,37 +322,42 @@ export const ItemPage = (): JSX.Element => {
 
                                     <Tabs defaultValue="attribute">
                                         {/* Tab triggers */}
-                                        <TabsList className="w-full bg-zinc-900 border border-zinc-800 p-1 h-auto gap-1">
+                                        <TabsList
+                                            className="w-full bg-zinc-900 border border-zinc-800 p-1 h-auto gap-1">
                                             <TabsTrigger
                                                 value="attribute"
                                                 className="flex-1 data-[state=active]:bg-zinc-800 data-[state=active]:text-zinc-100 text-zinc-500 text-xs py-2 gap-2"
                                             >
-                                                <Sword size={12} className="text-sky-400 shrink-0" />
+                                                <Sword size={12} className="text-sky-400 shrink-0"/>
                                                 Attribute
-                                                {hasAttribute && <span className="w-1.5 h-1.5 rounded-full bg-sky-400 shrink-0" />}
+                                                {hasAttribute &&
+                                                    <span className="w-1.5 h-1.5 rounded-full bg-sky-400 shrink-0"/>}
                                             </TabsTrigger>
 
                                             <TabsTrigger
                                                 value="consumable"
                                                 className="flex-1 data-[state=active]:bg-zinc-800 data-[state=active]:text-zinc-100 text-zinc-500 text-xs py-2 gap-2"
                                             >
-                                                <Zap size={12} className="text-amber-400 shrink-0" />
+                                                <Zap size={12} className="text-amber-400 shrink-0"/>
                                                 Consumable
-                                                {hasConsumable && <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0" />}
+                                                {hasConsumable &&
+                                                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400 shrink-0"/>}
                                             </TabsTrigger>
 
                                             <TabsTrigger
                                                 value="enchant"
                                                 className="flex-1 data-[state=active]:bg-zinc-800 data-[state=active]:text-zinc-100 text-zinc-500 text-xs py-2 gap-2"
                                             >
-                                                <Sparkles size={12} className="text-purple-400 shrink-0" />
+                                                <Sparkles size={12} className="text-purple-400 shrink-0"/>
                                                 Enchant
-                                                {hasEnchant && <span className="w-1.5 h-1.5 rounded-full bg-purple-400 shrink-0" />}
+                                                {hasEnchant &&
+                                                    <span className="w-1.5 h-1.5 rounded-full bg-purple-400 shrink-0"/>}
                                             </TabsTrigger>
                                         </TabsList>
 
                                         {/*ATTRIBUTE TAB*/}
-                                        <TabsContent value="attribute" className="mt-3 rounded-xl border border-zinc-800 bg-zinc-900/40 p-4">
+                                        <TabsContent value="attribute"
+                                                     className="mt-3 rounded-xl border border-zinc-800 bg-zinc-900/40 p-4">
                                             <ComponentTabHeader
                                                 label="Attribute"
                                                 enabled={hasAttribute}
@@ -344,32 +368,39 @@ export const ItemPage = (): JSX.Element => {
                                             <div className={!hasAttribute ? "opacity-40 pointer-events-none" : ""}>
                                                 <div className="flex items-center gap-3 mb-3">
                                                     <Label className="text-xs text-zinc-400 w-16 shrink-0">Slot</Label>
-                                                    <Select value={attributeSlot} onValueChange={(v) => setAttributeSlot(v as Slot)}>
-                                                        <SelectTrigger className="h-7 text-xs bg-zinc-900 border-zinc-700 w-40">
-                                                            <SelectValue />
+                                                    <Select value={attributeSlot}
+                                                            onValueChange={(v) => setAttributeSlot(v as Slot)}>
+                                                        <SelectTrigger
+                                                            className="h-7 text-xs bg-zinc-900 border-zinc-700 w-40">
+                                                            <SelectValue/>
                                                         </SelectTrigger>
-                                                        <SelectContent className="bg-zinc-900 border-zinc-700 text-zinc-100">
-                                                            <SelectItem value="MAINHAND" className="text-xs">MAINHAND</SelectItem>
-                                                            <SelectItem value="OFFHAND"  className="text-xs">OFFHAND</SelectItem>
+                                                        <SelectContent
+                                                            className="bg-zinc-900 border-zinc-700 text-zinc-100">
+                                                            <SelectItem value="MAINHAND"
+                                                                        className="text-xs">MAINHAND</SelectItem>
+                                                            <SelectItem value="OFFHAND"
+                                                                        className="text-xs">OFFHAND</SelectItem>
                                                         </SelectContent>
                                                     </Select>
-                                                    <Badge className="ml-auto text-[10px] bg-sky-900/60 text-sky-300 border-sky-800">
+                                                    <Badge
+                                                        className="ml-auto text-[10px] bg-sky-900/60 text-sky-300 border-sky-800">
                                                         {Object.values(attributes).filter(v => v !== 0 && v !== undefined).length} set
                                                     </Badge>
                                                 </div>
-                                                <Separator className="bg-zinc-800 mb-2" />
+                                                <Separator className="bg-zinc-800 mb-2"/>
                                                 <div className="grid grid-cols-1 gap-0.5 max-h-80 overflow-y-auto pr-1">
                                                     {ATTRIBUTE_KEYS.map((key) => (
                                                         <FieldRow key={key} label={key} type="number"
                                                                   value={attributes[key]}
-                                                                  onChange={(v) => setAttr(key, v as number)} />
+                                                                  onChange={(v) => setAttr(key, v as number)}/>
                                                     ))}
                                                 </div>
                                             </div>
                                         </TabsContent>
 
                                         {/*CONSUMABLE TAB*/}
-                                        <TabsContent value="consumable" className="mt-3 rounded-xl border border-zinc-800 bg-zinc-900/40 p-4">
+                                        <TabsContent value="consumable"
+                                                     className="mt-3 rounded-xl border border-zinc-800 bg-zinc-900/40 p-4">
                                             <ComponentTabHeader
                                                 label="Consumable"
                                                 enabled={hasConsumable}
@@ -389,13 +420,14 @@ export const ItemPage = (): JSX.Element => {
                                                         />
                                                     ))}
                                                 </div>
-                                                <Separator className="bg-zinc-800 mb-3" />
-                                                <EffectList effects={consumable.effects} onChange={setEffects} />
+                                                <Separator className="bg-zinc-800 mb-3"/>
+                                                <EffectList effects={consumable.effects} onChange={setEffects}/>
                                             </div>
                                         </TabsContent>
 
                                         {/*ENCHANT TAB*/}
-                                        <TabsContent value="enchant" className="mt-3 rounded-xl border border-zinc-800 bg-zinc-900/40 p-4">
+                                        <TabsContent value="enchant"
+                                                     className="mt-3 rounded-xl border border-zinc-800 bg-zinc-900/40 p-4">
                                             <ComponentTabHeader
                                                 label="Enchant"
                                                 enabled={hasEnchant}
@@ -406,7 +438,7 @@ export const ItemPage = (): JSX.Element => {
                                             <div className={!hasEnchant ? "opacity-40 pointer-events-none" : ""}>
                                                 <EnchantList
                                                     enchant={enchant.enchants}
-                                                    onChange={(v) => setEnchant({ enchants: v })}
+                                                    onChange={(v) => setEnchant({enchants: v})}
                                                 />
                                             </div>
                                         </TabsContent>
