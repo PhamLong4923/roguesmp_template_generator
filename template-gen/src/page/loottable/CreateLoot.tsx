@@ -88,6 +88,13 @@ export const CreateLootTablePage = (): JSX.Element => {
                     {/*Config panel*/}
                     <div className="w-1/2 border-r border-zinc-800 flex flex-col overflow-hidden"
                          style={{alignItems: "center", background: "rgba(10,10,18,0.6)"}}>
+                        <div>
+
+                        </div>
+                    </div>
+
+                    <div className="flex-1 border-r border-zinc-800 flex flex-col overflow-hidden"
+                         style={{alignItems: "center", background: "rgba(10,10,18,0.6)"}}>
 
                     </div>
                 </div>
