@@ -5,6 +5,7 @@ import ItemPage from "@/page/item/Index";
 import {EntityPage} from "@/page/entity";
 import {LootTablePage} from "@/page/loottable/Index";
 import {CreateLootTablePage} from "@/page/loottable/CreateLoot";
+import {ListItem} from "@/page/item/ListItem";
 
 export const router = createBrowserRouter([
     {
@@ -16,7 +17,8 @@ export const router = createBrowserRouter([
         element: <ProtectedRoute/>,
         children: [
             {path: "/", element: <div>Dashboard</div>},
-            {path: "/item", element: <ItemPage></ItemPage>},
+            {path: "/item/create", element: <ItemPage></ItemPage>},
+            {path: "/item/list", element: <ListItem></ListItem>},
             {path: "/dungeon", element: <div>Dungeon</div>},
             {path: "/entity", element: <EntityPage></EntityPage>},
             {path: "/loottable", element: <LootTablePage></LootTablePage>},

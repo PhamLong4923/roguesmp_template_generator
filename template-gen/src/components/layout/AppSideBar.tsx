@@ -42,12 +42,18 @@ const LOOT_TABLE_SUB_ITEMS = [
     {label: "List", to: "/loottable", icon: List},
 ];
 
+const ITEM_SUB_ITEMS = [
+    {label: "Create", to: "/item/create", icon: FilePlus},
+    {label: "Update", to: "/item/update", icon: FilePen},
+    {label: "List", to: "/item/list", icon: List},
+]
+
 const NAV_SECTIONS = [
     {
         label: "EDITORS",
         items: [
             {label: "Dashboard", to: "/", icon: LayoutDashboard, sub: null},
-            {label: "Item", to: "/item", icon: Sword, sub: null},
+            {label: "Item", to: "/item", icon: Sword, sub: ITEM_SUB_ITEMS},
             {label: "Entity", to: "/entity", icon: Users, sub: null},
             {label: "Dungeon", to: "/dungeon", icon: Castle, sub: null},
             {label: "Room", to: "/room", icon: DoorOpen, sub: null},

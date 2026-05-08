@@ -20,12 +20,12 @@ import {Enchant} from "@/data/cpn/enchant";
 import {Slot} from "@/type/item-creator";
 import {ATTRIBUTE_KEYS, CONSUMABLE_FIELDS, DEFAULT_CONSUMABLE,} from "@/constants/item-creator";
 
-import {ItemSpritePreview} from "@/components/item-creator/ItemSpritePreview";
-import {LorePreview} from "@/components/item-creator/LorePreview";
-import {McTextEditor} from "@/components/item-creator/McTextEditor";
-import {FieldRow} from "@/components/item-creator/FieldRow";
-import {EffectList} from "@/components/item-creator/EffectList";
-import {EnchantList} from "@/components/item-creator/EnchantList";
+import {ItemSpritePreview} from "@/components/item/ItemSpritePreview";
+import {LorePreview} from "@/components/item/LorePreview";
+import {McTextEditor} from "@/components/item/McTextEditor";
+import {FieldRow} from "@/components/item/FieldRow";
+import {EffectList} from "@/components/item/EffectList";
+import {EnchantList} from "@/components/item/EnchantList";
 import MinecraftItemPicker from "@/components/item_selector/MinecraftItemPicker";
 
 // ─── Default states (dùng để reset per-component) ─────────────────────────────
