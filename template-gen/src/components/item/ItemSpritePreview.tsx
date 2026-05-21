@@ -1,13 +1,16 @@
-import { useMcItemSprite } from "@/hooks/use-mc-item-sprite";
+import {useMcItemSprite} from "@/hooks/use-mc-item-sprite";
 
 interface ItemSpritePreviewProps {
     base: string;
 }
 
-const itemImages: Record<string, string> = import.meta.glob('../../public/data/item_texture/*.png', { eager: true, import: 'default' });
+const itemImages: Record<string, string> = import.meta.glob('../../public/data/item_texture/*.png', {
+    eager: true,
+    import: 'default'
+});
 
-export function ItemSpritePreview({ base }: ItemSpritePreviewProps): JSX.Element {
-    const { spriteUrl, fallbackColor, label } = useMcItemSprite(base);
+export function ItemSpritePreview({base}: ItemSpritePreviewProps): JSX.Element {
+    const {spriteUrl, fallbackColor, label} = useMcItemSprite(base);
 
     return (
         <div
@@ -30,13 +33,13 @@ export function ItemSpritePreview({ base }: ItemSpritePreviewProps): JSX.Element
                     src={itemImages[spriteUrl]}
                     alt={label}
                     className="w-3/4 h-3/4 object-contain"
-                    style={{ imageRendering: "pixelated" }}
+                    style={{imageRendering: "pixelated"}}
                 />
             ) : base ? (
                 <div className="flex flex-col items-center gap-2">
                     <div
                         className="w-14 h-14 rounded-lg border-2 border-white/20 shadow-lg"
-                        style={{ backgroundColor: fallbackColor }}
+                        style={{backgroundColor: fallbackColor}}
                     />
                     <span className="text-[10px] text-zinc-500 font-mono text-center px-2 leading-tight">
                         {label}
