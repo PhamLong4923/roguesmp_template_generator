@@ -7,9 +7,10 @@ export type CreateItemDto = Omit<Item, 'id'>;
 export type UpdateItemDto = Partial<Omit<Item, 'id'>>;
 
 function normalizeItem(item: Item): Item {
-    const consumable = item.components?.consumable;
-    if (consumable && !Array.isArray(consumable.effects)) {
-        consumable.effects = Object.values(consumable.effects ?? {});
+    // Firestore may store the consumable.effects array as a keyed object; coerce back to an array.
+    const consumable = item.components?.consumable as { effects?: unknown } | undefined;
+    if (consumable && consumable.effects && !Array.isArray(consumable.effects)) {
+        consumable.effects = Object.values(consumable.effects);
     }
     return item;
 }

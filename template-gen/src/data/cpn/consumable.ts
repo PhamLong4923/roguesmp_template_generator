@@ -1,8 +1,11 @@
+import { ItemUseAnimation } from "@/type/item-creator";
+
 export interface Consumable {
     hunger: number;
     saturation: number;
     canAlwaysEat: boolean;
-    animation: string;
+    consumeSeconds: number;
+    animation: ItemUseAnimation;
     sound: string;
     hasParticles: boolean;
     effects: Effect[]

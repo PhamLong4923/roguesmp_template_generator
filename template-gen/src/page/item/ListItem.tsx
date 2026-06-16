@@ -23,11 +23,11 @@ export const ListItem = (): JSX.Element => {
 
     const filteredItems = useMemo(
         () =>
-            items.filter((item: Item) =>
-                item.components.name
-                    .toLowerCase()
-                    .includes(filters.search.toLowerCase()),
-            ),
+            items.filter((item: Item) => {
+                const name = (item.components?.name as string) ?? "";
+                const haystack = `${name} ${item.id}`.toLowerCase();
+                return haystack.includes(filters.search.toLowerCase());
+            }),
         [items, filters],
     );
 

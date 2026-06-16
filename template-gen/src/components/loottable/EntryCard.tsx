@@ -1,9 +1,11 @@
 ﻿import {useState} from "react";
 import {BookOpen, Package, RefreshCw, Trash2} from "lucide-react";
 import {cn} from "@/lib/utils";
-import {getItemMeta, LootEntry} from "@/type/loottable";
+import {LootEntry} from "@/type/loottable";
 import {ItemPickerPopup} from "@/components/loottable/ItemPickerPopup";
 import {LootTablePickerPopup} from "@/components/loottable/LootTablePickerPopup";
+import {useItemOptions} from "@/hooks/use-item-options";
+import {ItemSpritePreview} from "@/components/item/ItemSpritePreview";
 
 // ── Shared inline number input ────────────────────────────────
 interface FieldInputProps {
@@ -59,23 +61,24 @@ const ItemEntryBody = ({
     onChange: (patch: Partial<typeof entry>) => void;
 }) => {
     const [pickerOpen, setPickerOpen] = useState(false);
-    const meta = getItemMeta(entry.item_id);
+    const { byId } = useItemOptions();
+    const meta = byId[entry.item_id];
+    const displayName = meta?.name ?? entry.item_id ?? "(chưa chọn)";
 
     return (
         <>
-            {/* Item icon — large, clickable */}
+            {/* Item sprite — large, clickable */}
             <button
                 onClick={() => setPickerOpen(true)}
                 title="Đổi item"
                 className={cn(
-                    "w-14 h-14 rounded-xl flex-shrink-0",
+                    "w-14 h-14 rounded-xl flex-shrink-0 overflow-hidden p-1",
                     "bg-zinc-950 border border-zinc-800",
-                    "flex items-center justify-center text-3xl",
                     "hover:border-emerald-500/50 hover:bg-emerald-500/5",
                     "transition-all cursor-pointer"
                 )}
             >
-                {meta.icon}
+                <ItemSpritePreview base={meta?.base ?? entry.item_id} />
             </button>
 
             {/* Right side: name row + inputs row */}
@@ -83,7 +86,7 @@ const ItemEntryBody = ({
                 {/* Item name + đổi button */}
                 <div className="flex items-center gap-2">
                     <span className="text-sm font-semibold text-zinc-100 font-mono truncate flex-1 leading-none">
-                        {meta.name}
+                        {displayName}
                     </span>
                     <button
                         onClick={() => setPickerOpen(true)}
@@ -113,7 +116,7 @@ const ItemEntryBody = ({
 
             {pickerOpen && (
                 <ItemPickerPopup
-                    onSelect={(item) => onChange({item_id: item.id})}
+                    onSelect={(id) => onChange({item_id: id})}
                     onClose={() => setPickerOpen(false)}
                 />
             )}

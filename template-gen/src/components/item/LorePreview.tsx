@@ -1,36 +1,19 @@
-// LorePreview.tsx
+// LorePreview.tsx — registry-driven. Iterates every component that defines a lore
+// contributor, in location order, instead of knowing component types up front.
 import { McTextLine } from "./McTextLine";
-import { LORE_CONTRIBUTORS } from "@/utils/lore";
-import { Consumable } from "@/data/cpn/consumable";
-import {Attribute} from "@/data/cpn/attribute";
-import {Enchant} from "@/data/cpn/enchant";
-
-interface ComponentsData {
-    consumable?: Consumable;
-    attribute?: Attribute;
-    enchant?:    Enchant;
-}
+import { LORE_CONTRIBUTORS } from "@/registry/components";
 
 interface LorePreviewProps {
     name: string;
-    description: string;
-    components?: ComponentsData;
+    /** enabled component data keyed by component id (editor shape, e.g. { attribute: {...} }). */
+    components: Record<string, unknown>;
 }
 
-export function LorePreview({ name, description, components }: LorePreviewProps): JSX.Element {
-    const descLines = description
-        ? description.split("\n").filter((l) => l.trim())
-        : [];
-
-    // Map từ contributor → đúng data của nó
-    // LoreContributor<Consumable> cần Consumable, contributor khác cần data khác
-    // Dùng "componentKey" trên contributor để lookup
-    const contributorLines = components
-        ? LORE_CONTRIBUTORS.flatMap((c) => {
-            const data = components[c.componentKey as keyof ComponentsData];
-            return data ? c.buildLines(data as never) : [];
-        })
-        : [];
+export function LorePreview({ name, components }: LorePreviewProps): JSX.Element {
+    const lines = LORE_CONTRIBUTORS.flatMap(({ key, lore }) => {
+        const data = components[key];
+        return data !== undefined && data !== null ? lore.buildLines(data as never) : [];
+    });
 
     return (
         <div
@@ -49,24 +32,11 @@ export function LorePreview({ name, description, components }: LorePreviewProps)
                 <div className="text-xs text-zinc-600 italic">Tên item...</div>
             )}
 
-            {descLines.length > 0 && (
+            {lines.length > 0 && (
                 <>
                     <div className="border-t border-[#5a3e8a]/40 my-1" />
                     <div className="space-y-0.5">
-                        {descLines.map((line, i) => (
-                            <div key={i} className="text-xs">
-                                <McTextLine text={line} />
-                            </div>
-                        ))}
-                    </div>
-                </>
-            )}
-
-            {contributorLines.length > 0 && (
-                <>
-                    <div className="border-t border-[#5a3e8a]/40 my-1" />
-                    <div className="space-y-0.5">
-                        {contributorLines.map((line, i) => (
+                        {lines.map((line, i) => (
                             <div key={i} className={`text-xs ${line.indent ? "pl-2" : ""}`}>
                                 <McTextLine text={line.text} />
                             </div>

@@ -1,19 +1,10 @@
-﻿// ItemCard.tsx
+// ItemCard.tsx — registry-driven preview of a saved item.
 import {Card} from "@/components/ui/card";
 import {Item} from "@/data/item";
 import {ItemSpritePreview} from "@/components/item/ItemSpritePreview";
 import {McTextLine} from "@/components/item/McTextLine";
-import {LORE_CONTRIBUTORS} from "@/utils/lore";
-import {Consumable} from "@/data/cpn/consumable";
-import {Attribute} from "@/data/cpn/attribute";
-import {Enchant} from "@/data/cpn/enchant";
+import {LORE_CONTRIBUTORS, COMPONENT_MAP} from "@/registry/components";
 import {cn} from "@/lib/utils";
-
-interface ComponentsData {
-    consumable?: Consumable;
-    attribute?: Attribute;
-    enchant?: Enchant;
-}
 
 interface ItemCardProps {
     item: Item;
@@ -26,21 +17,25 @@ const MC_FONT: React.CSSProperties = {
     fontFamily: "'Minecraft','Courier New',monospace",
 };
 
+// component keys that are rendered elsewhere (name as title, description inline)
+const NON_BADGE_KEYS = new Set(["name", "description"]);
+
 export function ItemCard({
                              item,
                              selected = false,
                              onClick,
                              variant = "compact",
                          }: ItemCardProps): JSX.Element {
-    const {name, description, consumable, attribute, enchant} = item.components;
-    const components: ComponentsData = {consumable, attribute, enchant};
+    const components = item.components ?? {};
+    const name = (components.name as string) ?? "";
+    const descLines = (components.description as string[]) ?? [];
 
-    const descLines = description ?? [];
-
-    const contributorLines = LORE_CONTRIBUTORS.flatMap((c) => {
-        const data = components[c.componentKey as keyof ComponentsData];
-        return data ? c.buildLines(data as never) : [];
+    const contributorLines = LORE_CONTRIBUTORS.flatMap(({key, lore}) => {
+        const data = components[key];
+        return data !== undefined && data !== null ? lore.buildLines(data as never) : [];
     });
+
+    const badgeKeys = Object.keys(components).filter((k) => !NON_BADGE_KEYS.has(k));
 
     if (variant === "compact") {
         return (
@@ -56,24 +51,19 @@ export function ItemCard({
                     "p-2 flex flex-col gap-1.5",
                 )}
             >
-                {/* Glow */}
                 <div
                     className="pointer-events-none absolute -top-4 -right-4 w-16 h-16 rounded-full bg-[#6d3fc5]/15 blur-xl group-hover:bg-[#9660f0]/25 transition-colors duration-500"/>
 
-                {/* Sprite — fixed square container */}
                 <div className="w-full" style={{aspectRatio: "1/1"}}>
                     <ItemSpritePreview base={item.base}/>
                 </div>
 
-                {/* Divider */}
                 <div className="h-px bg-gradient-to-r from-transparent via-[#5a3e8a]/50 to-transparent"/>
 
-                {/* Name */}
                 <div className="text-[10px] leading-tight line-clamp-2" style={MC_FONT}>
                     <McTextLine text={name}/>
                 </div>
 
-                {/* First desc line only */}
                 {descLines[0] && (
                     <div className="text-[8px] leading-tight opacity-60 truncate" style={MC_FONT}>
                         <McTextLine text={descLines[0]}/>
@@ -92,11 +82,9 @@ export function ItemCard({
                 "p-4 flex flex-col gap-3",
             )}
         >
-            {/* Glow */}
             <div
                 className="pointer-events-none absolute -top-8 -right-8 w-32 h-32 rounded-full bg-[#6d3fc5]/10 blur-3xl"/>
 
-            {/* ── Sprite + Name side by side ── */}
             <div className="flex items-start gap-4">
                 <div className="w-24 h-24 flex-shrink-0">
                     <ItemSpritePreview base={item.base}/>
@@ -110,21 +98,7 @@ export function ItemCard({
                 </div>
             </div>
 
-            {/* ── Description ── */}
-            {descLines.length > 0 && (
-                <>
-                    <div className="h-px bg-gradient-to-r from-transparent via-[#5a3e8a]/50 to-transparent"/>
-                    <div className="space-y-0.5">
-                        {descLines.map((line, i) => (
-                            <div key={i} className="text-xs leading-relaxed" style={MC_FONT}>
-                                <McTextLine text={line}/>
-                            </div>
-                        ))}
-                    </div>
-                </>
-            )}
-
-            {/* ── Stats from contributors ── */}
+            {/* ── Lore (description + stats) from contributors ── */}
             {contributorLines.length > 0 && (
                 <>
                     <div className="h-px bg-gradient-to-r from-transparent via-[#5a3e8a]/50 to-transparent"/>
@@ -142,12 +116,14 @@ export function ItemCard({
                 </>
             )}
 
-            {/* ── Badges ── */}
-            <div className="flex flex-wrap gap-1.5 pt-1">
-                {consumable && <Badge label="Consumable" color="#3e7c5e"/>}
-                {attribute && <Badge label="Attribute" color="#1a6eb5"/>}
-                {enchant && <Badge label="Enchant" color="#7c3aed"/>}
-            </div>
+            {/* ── Component badges ── */}
+            {badgeKeys.length > 0 && (
+                <div className="flex flex-wrap gap-1.5 pt-1">
+                    {badgeKeys.map((k) => (
+                        <Badge key={k} label={COMPONENT_MAP[k]?.label ?? k} color="#6d3fc5"/>
+                    ))}
+                </div>
+            )}
         </Card>
     );
 }

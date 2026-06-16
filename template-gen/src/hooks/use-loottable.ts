@@ -1,5 +1,4 @@
 ﻿import {queryOptions, useMutation, useQuery, useQueryClient} from "@tanstack/react-query";
-import {itemKeys} from "@/hooks/use-item";
 import {loottableService} from "@/service/loottable";
 import {LootTable} from "@/type/loottable";
 
@@ -11,7 +10,7 @@ export const lootKeys = {
 
 export const lootQueryOptions = {
     all: () => queryOptions({
-        queryKey: itemKeys.all(),
+        queryKey: lootKeys.all(),
         queryFn: loottableService.getAll,
         staleTime: 5 * 60 * 1000,
     }),
@@ -37,7 +36,7 @@ export function useCreateLoot() {
     return useMutation({
         mutationFn: (data: LootTable) => loottableService.create(data),
         onSuccess: () => {
-            qc.invalidateQueries({queryKey: itemKeys.all()});
+            qc.invalidateQueries({queryKey: lootKeys.all()});
         },
     })
 }

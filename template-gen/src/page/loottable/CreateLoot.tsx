@@ -6,7 +6,7 @@ import {JsonPreviewPanel} from "@/components/loottable/JsonPreviewPanel";
 import {LootTableIdInput} from "@/components/loottable/LootTableIdInput";
 import {PoolConfigPanel} from "@/components/loottable/PoolConfigPanel";
 import {PoolListPanel} from "@/components/loottable/PoolListPanel";
-// import { useCreateLoot } from "@/hooks/use-loottable"; // uncomment when API ready
+import {useCreateLoot} from "@/hooks/use-loottable";
 
 // ── Default pool factory ──────────────────────────────────────
 const makePool = (): PoolInfo => ({rolls: 1, bonus_rolls: 0, entries: []});
@@ -16,7 +16,7 @@ export const CreateLootTablePage = (): JSX.Element => {
     const [pools, setPools] = useState<PoolInfo[]>([makePool()]);
     const [activePool, setActivePool] = useState<number>(0);
 
-    // const createLoot = useCreateLoot();
+    const createLoot = useCreateLoot();
 
     // ── Derived ─────────────────────────────────────────────────
     const lootData = useCallback(
@@ -98,7 +98,7 @@ export const CreateLootTablePage = (): JSX.Element => {
             return;
         }
         try {
-            // await createLoot.mutateAsync(data);
+            await createLoot.mutateAsync(data);
             alert("✓ Lưu thành công!\nID: " + data.id);
         } catch (e) {
             alert("Lỗi: " + (e as Error).message);

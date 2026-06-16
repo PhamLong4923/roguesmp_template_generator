@@ -1,6 +1,8 @@
 import { FieldDef, McColor, McFormat } from "@/type/item-creator";
 import { Consumable, Effect } from "@/data/cpn/consumable";
-import { Attributes } from "@/data/cpn/attribute";
+
+// Single source of truth for attribute ids — mirrors the plugin enum.
+export { ATTRIBUTE_KEYS } from "@/registry/attribute-registry";
 
 // ─── Mock data ────────────────────────────────────────────────────────────────
 
@@ -41,24 +43,14 @@ export const MC_FORMATS: McFormat[] = [
 
 // ─── Field definitions ────────────────────────────────────────────────────────
 
-export const ATTRIBUTE_KEYS: Array<keyof Attributes> = [
-    "attack_knockback", "attack_speed_base", "block_reach", "burning_time",
-    "critical_damage_flat", "defense_flat", "entity_reach", "fall_damage",
-    "gravity", "jump_strength", "knockback_resistance", "luck", "max_health_flat",
-    "max_health_percent", "melee_damage_base", "movement_efficiency", "oxygen_bonus",
-    "projectile_damage_base", "projectile_damage_percent", "projectile_speed_base",
-    "projectile_speed_percent", "safe_fall_distance", "scale", "sneaking_speed",
-    "speed_flat", "speed_percent", "step_height", "submerged_mining_speed",
-    "sweeping_damage_ratio", "water_movement_efficiency",
-];
-
+// `animation` is handled separately via an enum select; `sound` is a namespaced key string.
 export const CONSUMABLE_FIELDS: FieldDef[] = [
-    { key: "hunger",       type: "number"  },
-    { key: "saturation",   type: "number"  },
-    { key: "canAlwaysEat", type: "boolean" },
-    { key: "animation",    type: "string"  },
-    { key: "sound",        type: "string"  },
-    { key: "hasParticles", type: "boolean" },
+    { key: "hunger",         type: "number"  },
+    { key: "saturation",     type: "number"  },
+    { key: "consumeSeconds", type: "number"  },
+    { key: "canAlwaysEat",   type: "boolean" },
+    { key: "sound",          type: "string"  },
+    { key: "hasParticles",   type: "boolean" },
 ];
 
 // id đặt đầu để user nhìn thấy context trước khi điền các field còn lại
@@ -84,11 +76,12 @@ export const makeDefaultEffect = (): Effect => ({
 });
 
 export const DEFAULT_CONSUMABLE: Consumable = {
-    hunger:      0,
-    saturation:  0,
-    canAlwaysEat: false,
-    animation:   "",
-    sound:       "",
-    hasParticles: false,
-    effects:     [],
+    hunger:        0,
+    saturation:    0,
+    canAlwaysEat:  false,
+    consumeSeconds: 1.6,
+    animation:     "EAT",
+    sound:         "minecraft:entity.generic.eat",
+    hasParticles:  true,
+    effects:       [],
 };

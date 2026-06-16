@@ -18,10 +18,12 @@ const RollInput = ({
                        label,
                        value,
                        onChange,
+                       step = 1,
                    }: {
     label: string;
     value: number;
     onChange: (v: number) => void;
+    step?: number;
 }) => (
     <div className="flex flex-col gap-1.5 flex-1">
         <label className="text-[10px] uppercase tracking-widest text-zinc-500 font-medium">
@@ -30,6 +32,7 @@ const RollInput = ({
         <input
             type="number"
             min={0}
+            step={step}
             value={value}
             onChange={(e) => onChange(+e.target.value)}
             className="h-8 px-3 bg-zinc-900/80 border border-zinc-700/50 rounded-lg text-sm text-zinc-200 font-mono outline-none focus:border-zinc-500 transition-colors w-full"
@@ -77,7 +80,7 @@ export const PoolConfigPanel = ({
         <div className="px-4 py-3 border-b border-zinc-800/60 flex-shrink-0">
             <div className="flex gap-3">
                 <RollInput label="Rolls" value={pool.rolls} onChange={onRollsChange}/>
-                <RollInput label="Bonus Rolls" value={pool.bonus_rolls} onChange={onBonusRollsChange}/>
+                <RollInput label="Bonus Rolls" value={pool.bonus_rolls} onChange={onBonusRollsChange} step={0.1}/>
             </div>
         </div>
 
